@@ -1,0 +1,3 @@
+cd /mnt/c/Lindoapi/meus_testes/p2
+source .venv/bin/activate
+python src/experimentos.py e1

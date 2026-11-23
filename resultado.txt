@@ -1,0 +1,85 @@
+================================================================================
+RESULTADOS COMPLETOS - MODELO DE TRANSPORTE MULTIMODAL (HiGHS / PYTHON)
+================================================================================
+
+--------------------------------------------------------------------------------
+1. EXPERIMENTO E1: REPRODUCAO E AUDITORIA DO ARTIGO (2x4x10)
+--------------------------------------------------------------------------------
+Dimensao: 2 fabricas, 4 modais, 10 semanas (140 variaveis, 70 restricoes).
+Estoque inicial minimo para viabilizar a Tabela 7: z0 = [100.0, 250.0]
+
+[Variante A: Modelo Completo com z0 = 0]
+Linha      |        TC |       TCF |       ATT | TC Artigo | TCF Artigo | ATT Artigo
+min        |    220500 |     80500 |     1.775 |    152000 |      69500 |      1.775
+max        |    353500 |    114500 |     2.725 |    346000 |     107000 |      3.450
+rodada1    |    228500 |     85000 |     2.725 |    160000 |      90500 |      3.400
+rodada2    |    231500 |     84500 |     2.675 |    243000 |      71500 |      2.450
+rodada3    |    228500 |     85000 |     2.725 |    162000 |      89500 |      3.350
+tabela7    | Infeasible (envios da semana 1 excedem capacidade de producao)
+
+[Variante B: Modelo Completo com z0 calibrado = (100, 250)]
+Linha      |        TC |       TCF |       ATT | TC Artigo | TCF Artigo | ATT Artigo
+min        |    157300 |     75500 |     1.775 |    152000 |      69500 |      1.775
+max        |    354600 |    112000 |     3.575 |    346000 |     107000 |      3.450
+rodada1    |    164675 |     92625 |     3.438 |    160000 |      90500 |      3.400
+rodada2    |    189000 |     85750 |     3.100 |    243000 |      71500 |      2.450
+rodada3    |    172300 |     88750 |     3.300 |    162000 |      89500 |      3.350
+tabela7    |    173300 |     89500 |     3.350 |    162000 |      89500 |      3.350
+Decomposicao TC (tabela7): Frete = 162000.0 | Estoque Fabrica = 11300.0 | Centro = 0.0 | Atraso = 0.0
+
+[Variante C: Sem Restricao de Capacidade de Producao (4), z0 = 0]
+Linha      |        TC |       TCF |       ATT | TC Artigo | TCF Artigo | ATT Artigo
+min        |    149750 |     69500 |     1.775 |    152000 |      69500 |      1.775
+max        |    346000 |    107000 |     3.675 |    346000 |     107000 |      3.450
+rodada1    |    160000 |     90500 |     3.400 |    160000 |      90500 |      3.400
+rodada2    |    243000 |     71500 |     2.450 |    243000 |      71500 |      2.450
+rodada3    |    162000 |     89500 |     3.350 |    162000 |      89500 |      3.350
+tabela7    |    162000 |     89500 |     3.350 |    162000 |      89500 |      3.350
+Decomposicao TC (tabela7): Frete = 162000.0 | Estoque Fabrica = 0.0 | Centro = 0.0 | Atraso = 0.0
+
+
+--------------------------------------------------------------------------------
+2. EXPERIMENTO E2: INSTANCIA DE GRANDE PORTE (50x6x52)
+--------------------------------------------------------------------------------
+Dimensao: 50 fabricas, 6 modais, 52 semanas | Demanda total: 242.088 conteineres
+Tamanho da matriz: 20.904 variaveis (19.903 livres), 2.964 restricoes, 53.807 nao nulos
+Tempo de montagem: 0.056 s | Tempo total do solver (6 etapas): 9.003 s
+
+Etapa    | Tempo(s) |         TC |        TCF |    ATT | Distribuicao Modal (%)
+min_TC   |    2.180 |   13773388 |   15854673 | 4.2516 | Navio 87.09%, Navio Exp. 9.64%, Trem 2.66%, Caminhao 0.61%
+min_TCF  |    3.925 |   31242149 |    7610912 | 3.4453 | Trem+Cam. 52.13%, Caminhao 47.87%
+min_ATT  |    2.172 |   40964240 |   15000648 | 1.7263 | Trem 72.63%, Aviao 27.37%
+rodada1  |    0.191 |   14520679 |   14361300 | 4.1315 | Navio 84.91%, Caminhao 11.43%, Trem 3.12%, Navio Exp. 0.54%
+rodada2  |    0.254 |   25981446 |    8165746 | 3.2483 | Caminhao 47.87%, Trem+Cam. 43.59%, Navio 5.26%, Trem 3.28%
+rodada3  |    0.281 |   18863887 |   10914403 | 3.6906 | Navio 48.34%, Caminhao 47.87%, Trem 3.12%, Trem+Cam. 0.67%
+
+
+--------------------------------------------------------------------------------
+3. EXPERIMENTO E3: FRONTEIRA DE PARETO CUSTO x CO2 (EPSILON-RESTRICAO)
+--------------------------------------------------------------------------------
+
+[3.1 Instancia do Artigo - Variante C (Sem capacidade de producao, 41 pontos, 0.153 s)]
+Corte de CO2      |        TCF |         TC | Custo a mais |    ATT | Custo Marginal CO2
+0 (rodada 1)      |      90500 |     160000 |            - |  3.400 |                  -
+1000 (rodada 3)   |      89500 |     162000 |       +1.25% |  3.350 |               2.00
+2500              |      88000 |     168750 |       +5.47% |  3.275 |               3.50
+5000              |      85500 |     180000 |      +12.50% |  3.150 |               4.00
+10000             |      80500 |     202500 |      +26.56% |  2.900 |               4.25
+15000             |      75500 |     225000 |      +40.63% |  2.650 |               4.33
+19000 (rodada 2)  |      71500 |     243000 |      +51.88% |  2.450 |               4.37
+Extremos da curva : TC de 149.750 a 262.500 | TCF de 98.500 a 69.500
+Custo marginal    : Min = 0.6667 | Mediana = 4.5000 | Max = 10.5000 | Media = 3.8879
+
+[3.2 Instancia do Artigo - Variante A (Modelo Completo, 41 pontos, 0.217 s)]
+Extremos da curva : TC de 220.500 a 276.000 | TCF de 107.500 a 80.500
+Ponto de inflexao: TCF = 85.225 (TC = 228.125) -> custo marginal salta de ~0.50 para 4.17-16.44
+Custo marginal    : Min = 0.1667 | Mediana = 0.4000 | Max = 16.4444 | Media = 2.0556
+
+[3.3 Instancia de Grande Porte 50x6x52 (21 pontos, 66.499 s)]
+Extremos da curva : TC de 13.773.388 a 30.862.510 | TCF de 15.840.120 a 7.610.912
+Custo marginal    : Min = 0.2437 | Mediana = 1.3225 | Max = 11.5820 | Media = 2.0734
+Comparacao WS vs. Fronteira (mesmo nivel de CO2):
+- Rodada 1: TC = 14.520.679 vs. Fronteira = 14.341.512 (+1.25% custo adicional pelo ATT)
+- Rodada 2: TC = 25.981.446 vs. Fronteira = 25.650.118 (+1.29% custo adicional pelo ATT)
+- Rodada 3: TC = 18.863.887 vs. Fronteira = 18.762.410 (+0.54% custo adicional pelo ATT)
+================================================================================
